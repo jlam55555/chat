@@ -21,7 +21,7 @@
           message(nickname + " has left the chat.", "statusBad");
         });
         socket.on("message", function(msg, nick) {
-          message(msg, undefined, nickname);
+          message(msg, undefined, nick);
         });
         socket.on("yourMessage", function(msg) {
           message(msg, "your");
