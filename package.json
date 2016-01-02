@@ -1,0 +1,14 @@
+{
+  "name": "node-test",
+  "version": "0.0.1",
+  "description": "My third attempt at deploying a Node.js application (online).",
+  "author": "Jonathan Lam <jlam55555@gmail.com>",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "*",
+    "socket.io": "*"
+  }
+}
