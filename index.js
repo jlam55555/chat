@@ -7,11 +7,12 @@ app.get('/', function (req, res) {
 });
 
 io.on("connection", function(socket) {
-  alert("Hello, World!");
-  console.log("Hello, World!");
-  io.emit("newuser");
+  socket.broadcast.emit("newuser");
+  socket.on("message", function(message) {
+    io.emit("message", message);
+  });
 });
 
 http.listen((process.env.PORT || 5000), function() {
-  io.emit("status", "Listening on *:3000");
+  console.log("Listening...");
 });

@@ -2,8 +2,52 @@
 <html>
   <head>
     <title>Testing...</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script>
+      var socket = io();
+      var message = function(message, type) {
+        $("#messages").append("<div class='message " + (type || "") + "'>" + message + "</div>");
+      };
+      socket.on("newuser", function() {
+        message("A user joined the chat.", "status");
+      });
+      socket.on("message", function(msg) {
+        message(msg);
+      });
+      $(function() {
+        $("#send").blur(function() {
+          socket.emit("message", $(this).val());
+          $(this).val("");
+        });
+      });
+    </script>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body, html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        font-size: 16px;
+        font-family: sans-serif;
+      }
+      div.message {
+        width: 100%;
+        padding: 10px 20px;
+      }
+      div.message:nth-child(odd) {
+        background-color: #eeeeee;
+      }
+      div.message.status {
+        color: #008800;
+      }
+    </style>
   </head>
   <body>
-    <h1>Hello, World!</h1>
+    <div id="messages"></div>
+    <input id="send" placeholder="Enter a message" />
   </body>
 </html>
