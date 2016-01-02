@@ -1,24 +1,52 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Testing...</title>
+    <title>Realtime Chatting</title>
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
     <script>
-      var socket = io();
-      var message = function(message, type) {
-        $("#messages").append("<div class='message " + (type || "") + "'>" + message + "</div>");
+      var socket;
+      var nickname;
+      var init = function() {
+        socket = io();
+        socket.emit("nickname", nickname);
+        var message = function(message, type, nick) {
+          var nickPrint = (nick == undefined) ? "" : "<strong>" + nick + "</strong> ";
+          $("#messages").append("<div class='message " + (type || "") + "'>" + nickPrint + message + "</div>");
+        };
+        socket.on("newuser", function(nickname) {
+          message(nickname + " has joined the chat.", "status");
+        });
+        socket.on("disconnect", function(nickname) {
+          message(nickname + " has left the chat.", "statusBad");
+        });
+        socket.on("message", function(msg, nick) {
+          message(msg, undefined, nickname);
+        });
+        socket.on("yourMessage", function(msg) {
+          message(msg, "your");
+        });
       };
-      socket.on("newuser", function() {
-        message("A user joined the chat.", "status");
-      });
-      socket.on("message", function(msg) {
-        message(msg);
-      });
       $(function() {
         $("#send").blur(function() {
-          socket.emit("message", $(this).val());
+          if($(this).val() == "")
+            return;
+          socket.emit("message", $(this).val(), nickname);
           $(this).val("");
+        });
+        $("#nickname").blur(function() {
+          if($(this).val() == "")
+            return;
+          $("#getNickname").remove();
+          nickname = $(this).val();
+          init();
+        });
+        $("#nickname, #send").keydown(function(event) {
+          if(event.which == 13) {
+            event.preventDefault();
+            $(this).blur();
+            $("#send").focus();
+          };
         });
       });
     </script>
@@ -32,7 +60,8 @@
         width: 100%;
         height: 100%;
         font-size: 16px;
-        font-family: sans-serif;
+        font-family: Lora, serif;
+        color: #444444;
       }
       div.message {
         width: 100%;
@@ -44,10 +73,50 @@
       div.message.status {
         color: #008800;
       }
+      div.message.statusBad {
+        color: #880000;
+      }
+      div.message.your {
+        text-align: right;
+        color: #000088;
+      }
+      div#getNickname {
+        width: 100%;
+        height: 100%;
+        background-color: white;
+        font-size: 50px;
+        padding: 50px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 3;
+      }
+      input#nickname, input#send {
+        display: block;
+        width: 100%;
+        border: none;
+        outline: none;
+        background-color: transparent;
+        color: inherit;
+        font-size: inherit;
+        font-family: inherit;
+      }
+      input#nickname {
+        padding: 50px;
+        margin-left: -50px;
+      }
+      input#send {
+        padding: 20px;
+      }
     </style>
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
   </head>
   <body>
-    <div id="messages"></div>
+    <div id="getNickname">
+      Enter your nickname:
+      <input id="nickname" placeholder="Nick" />
+    </div>
     <input id="send" placeholder="Enter a message" />
+    <div id="messages"></div>
   </body>
 </html>
