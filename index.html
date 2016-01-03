@@ -14,6 +14,13 @@
           var nickPrint = (nick == undefined) ? "" : "<strong>" + nick + "</strong> ";
           $("#messages").append("<div class='message " + (type || "") + "'>" + nickPrint + message + "</div>");
         };
+        socket.on("allNicknames", function(allNicknames) {
+          var nicknameArray = allNicknames.split(",");
+          $("#nicknames").empty().html("<span id='numUsers' class='nickname'>" + nicknameArray.length + " active user" + (nicknameArray.length == 1 ? "" : "s" ) + ":</span>");
+          for(var i = 0; i < nicknameArray.length; i++) {
+            $("#nicknames").append("<span class='nickname'>" + nicknameArray[i] + "</span>");
+          }
+        });
         socket.on("newuser", function(nickname) {
           message(nickname + " has joined the chat.", "status");
         });
@@ -39,6 +46,7 @@
             return;
           $("#getNickname").remove();
           nickname = $(this).val();
+          $("#myNickname").html("Nickname: " + nickname);
           init();
         });
         $("#nickname, #send").keydown(function(event) {
@@ -47,6 +55,9 @@
             $(this).blur();
             $("#send").focus();
           };
+        });
+        $("#myNickname").click(function() {
+          $("#nicknames").slideToggle(200);
         });
       });
     </script>
@@ -62,6 +73,9 @@
         font-size: 16px;
         font-family: Lora, serif;
         color: #444444;
+      }
+      div#messages {
+        clear: both;
       }
       div.message {
         width: 100%;
@@ -107,6 +121,50 @@
       }
       input#send {
         padding: 20px;
+        display: inline-block;
+        width: 70%;
+        float: left;
+      }
+      div#myNickname, div#nicknames {
+        width: 100%;
+      }
+      div#myNickname {
+        padding: 20px;
+        width: 30%;
+        float: left;
+        display: inline-block;
+        background-image: url(https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_keyboard_arrow_down_48px-128.png);
+        background-position: right 10px top 20px;
+        background-size: 20px;
+        background-repeat: no-repeat;
+        cursor: pointer;
+      }
+      span.nickname {
+        float: left;
+        padding: 10px;
+        margin: 10px;
+        border-radius: 2px;
+      }
+      span.nickname:nth-child(odd) {
+        background-color: #888888;
+        color: #ffffff;
+      }
+      span.nickname:nth-child(even) {
+        background-color: #444444;
+        color: #eeeeee;
+      }
+      span.nickname#numUsers {
+        background-color: white;
+        color: black;
+      }
+      div#nicknames {
+        display: none;
+      }
+      input, div#myNickname {
+        transition: background-color .2s;
+      }
+      input#send:hover, div#myNickname:hover {
+        background-color: #eeeeee;
       }
     </style>
     <link href='https://fonts.googleapis.com/css?family=Lora:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
@@ -116,7 +174,9 @@
       Enter your nickname:
       <input id="nickname" placeholder="Nick" />
     </div>
+    <div id="myNickname"></div>
     <input id="send" placeholder="Enter a message" />
+    <div id="nicknames"></div>
     <div id="messages"></div>
   </body>
 </html>

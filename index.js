@@ -13,6 +13,7 @@ io.on("connection", function(socket) {
     socket.broadcast.emit("newuser", nick);
     clients.push(socket);
     clientNicknames.push(nick);
+    io.emit("allNicknames", clientNicknames.toString());
   });
   socket.on("message", function(message, nickname) {
     socket.broadcast.emit("message", message, nickname);
@@ -23,6 +24,7 @@ io.on("connection", function(socket) {
     io.emit("disconnect", clientNicknames[i]);
     clients.splice(i, 1);
     clientNicknames.splice(i, 1);
+    io.emit("allNicknames", clientNicknames.toString());
   });
 });
 
