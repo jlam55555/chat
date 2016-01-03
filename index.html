@@ -13,6 +13,7 @@
         var message = function(message, type, nick) {
           var nickPrint = (nick == undefined) ? "" : "<strong>" + nick + "</strong> ";
           $("#messages").append("<div class='message " + (type || "") + "'>" + nickPrint + message + "</div>");
+          $("body").animate({scrollTop: $(document).height()}, 200);
         };
         socket.on("allNicknames", function(allNicknames) {
           var nicknameArray = allNicknames.split(",");
@@ -58,6 +59,13 @@
         });
         $("#myNickname").click(function() {
           $("#nicknames").slideToggle(200);
+        });
+        $(window).scroll(function() {
+          if($("body").scrollTop() > 0) {
+            $("#send").addClass("wide");
+          } else {
+            $("#send").removeClass("wide");
+          }
         });
       });
     </script>
@@ -123,7 +131,16 @@
         padding: 20px;
         display: inline-block;
         width: 70%;
-        float: left;
+        position: fixed;
+        left: 30%;
+        background-color: white;
+        box-shadow: 0 0 10px white;
+        transition: all .2s;
+      }
+      input#send.wide {
+        width: 100%;
+        left: 0;
+        box-shadow: 0 0 10px black;
       }
       div#myNickname, div#nicknames {
         width: 100%;
@@ -159,6 +176,8 @@
       }
       div#nicknames {
         display: none;
+        width: 100%;
+        clear: both;
       }
       input, div#myNickname {
         transition: background-color .2s;
