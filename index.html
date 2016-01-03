@@ -115,6 +115,9 @@
             return;
           socket.emit("image", imageUrl, nickname);
         });
+        $("#info").click(function() {
+          alert("Realtime Chatting &hellip; w/ Node.js & Socket.io\nby Jonathan Lam <jlam55555@gmail.com>\n@ lam-node-test.herokuapp.com");
+        });
       });
     </script>
     <style>
@@ -316,6 +319,21 @@
         color: inherit;
         border-bottom: 1px dotted #444444;
       }
+      i#info {
+        display: block;
+        position: fixed;
+        z-index: 5;
+        bottom: 10px;
+        right: 10px;
+        height: 20px;
+        width: 20px;
+        font-size: 20px;
+        padding: 0;
+        transition: color .2s;
+      }
+      i#info:hover {
+        color: #888888;
+      }
     </style>
     <link href='https://fonts.googleapis.com/css?family=Lora:400,400italic,700,700italic' rel='stylesheet' type='text/css' />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
@@ -330,6 +348,7 @@
     <input id="send" placeholder="Enter a message" />
     <div id="uploadPhoto" class="fa fa-camera-retro" title="Send a photo"></div>
     <div id="nicknames"></div>
+    <i id="info" class="fa fa-info-circle"></i>
     <div id="messages"></div>
   </body>
 </html>

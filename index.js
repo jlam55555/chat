@@ -9,7 +9,7 @@ app.get('/', function (req, res) {
 var clients = [];
 var clientNicknames = [];
 var clientColors = [];
-var colors = [
+var colors = [  // color scheme from http://www.colorschemer.com/schemes/viewscheme.php?id=8924
   "ffcccc", // light red
   "ffe0cc", // light red-orange
   "ffeacc", // light orange
